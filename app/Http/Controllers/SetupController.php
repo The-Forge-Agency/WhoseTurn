@@ -34,9 +34,10 @@ class SetupController extends Controller
         $avatarUrl = null;
 
         if ($request->hasFile('avatar_photo')) {
-            $request->validate(['avatar_photo' => 'image|max:2048']);
             $avatarUrl = $request->file('avatar_photo')->store('avatars', 'public');
             $avatarSlug = $avatarSlug ?: 'personnage-01';
+        } elseif (! $avatarSlug) {
+            return back()->withErrors(['avatar_slug' => 'Choisis un avatar ou importe une photo.'])->withInput();
         } else {
             $takenAvatars = $coloc->roommates()->pluck('avatar_slug')->toArray();
             if (in_array($avatarSlug, $takenAvatars, true)) {

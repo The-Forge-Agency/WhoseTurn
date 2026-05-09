@@ -18,7 +18,8 @@ class StoreRoommateRequest extends FormRequest
     {
         return [
             'first_name' => ['required', 'string', 'max:30'],
-            'avatar_slug' => ['required', 'string', Rule::in(Roommate::AVATARS)],
+            'avatar_slug' => ['nullable', 'string', Rule::in(Roommate::AVATARS)],
+            'avatar_photo' => ['nullable', 'image', 'max:2048'],
         ];
     }
 }
