@@ -1,0 +1,46 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme inline {
+    --font-title: 'Nunito', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Space Mono', ui-monospace, monospace;
+    --font-sans: 'Nunito', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'Space Mono', ui-monospace, monospace;
+
+    --color-cream: #FFF8F0;
+    --color-ink: #2D2D2D;
+    --color-coral: #FF6B6B;
+    --color-coral-light: #FF8A8A;
+    --color-coral-dark: #E55A5A;
+    --color-card: #FFFFFF;
+    --color-card-foreground: #2D2D2D;
+    --color-border: #E8DDD0;
+    --color-muted: #F5EDE4;
+    --color-muted-foreground: #6B6B6B;
+    --color-secondary: #FFF0E6;
+    --color-secondary-foreground: #2D2D2D;
+
+    --radius-sm: 0.6rem;
+    --radius-md: 0.8rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.4rem;
+    --radius-2xl: 1.8rem;
+    --radius-3xl: 2.2rem;
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    body {
+        @apply bg-cream text-ink;
+        font-family: var(--font-body);
+    }
+    h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-title);
+    }
+}
