@@ -9,6 +9,7 @@ beforeEach(function () {
     $this->service = new RotationService;
     $this->coloc = Coloc::factory()->create();
     $this->coloc->createDefaultTasks();
+    $this->coloc->tasks()->update(['enabled' => true]);
 });
 
 test('simple rotation distributes tasks', function () {

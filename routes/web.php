@@ -17,6 +17,7 @@ Route::prefix('{coloc:share_code}')->group(function () {
     Route::post('/setup/roommate', [SetupController::class, 'storeRoommate'])->name('coloc.setup.roommate.store');
     Route::delete('/setup/roommate/{roommate}', [SetupController::class, 'destroyRoommate'])->name('coloc.setup.roommate.destroy')->scopeBindings();
     Route::post('/setup/tasks', [SetupController::class, 'storeTasks'])->name('coloc.setup.tasks.store');
+    Route::post('/setup/task/create', [SetupController::class, 'storeCustomTask'])->name('coloc.setup.task.create');
 
     Route::get('/settings', [SettingsController::class, 'index'])->name('coloc.settings');
     Route::post('/settings/roommate', [SettingsController::class, 'storeRoommate'])->name('coloc.settings.roommate.store');

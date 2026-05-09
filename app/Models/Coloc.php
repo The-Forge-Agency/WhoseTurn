@@ -76,7 +76,7 @@ class Coloc extends Model
             $this->tasks()->create([
                 'name' => $task['name'],
                 'icon_slug' => $task['icon_slug'],
-                'enabled' => true,
+                'enabled' => false,
                 'order' => $index,
             ]);
         }

@@ -6,6 +6,7 @@ use App\Models\Roommate;
 test('dashboard loads with assignments', function () {
     $coloc = Coloc::factory()->create();
     $coloc->createDefaultTasks();
+    $coloc->tasks()->update(['enabled' => true]);
     Roommate::factory()->count(3)->create(['coloc_id' => $coloc->id]);
 
     $this->get(route('coloc.dashboard', $coloc))

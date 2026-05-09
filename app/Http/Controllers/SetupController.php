@@ -7,6 +7,7 @@ use App\Http\Requests\StoreTasksRequest;
 use App\Models\Coloc;
 use App\Models\Roommate;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class SetupController extends Controller
@@ -78,5 +79,22 @@ class SetupController extends Controller
         $coloc->tasks()->whereIn('id', $enabledIds)->update(['enabled' => true]);
 
         return redirect()->route('coloc.dashboard', $coloc);
+    }
+
+    public function storeCustomTask(Request $request, Coloc $coloc): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:40',
+            'icon_slug' => 'required|string|max:30',
+        ]);
+
+        $coloc->tasks()->create([
+            'name' => $validated['name'],
+            'icon_slug' => $validated['icon_slug'],
+            'enabled' => true,
+            'order' => $coloc->tasks()->count(),
+        ]);
+
+        return back();
     }
 }

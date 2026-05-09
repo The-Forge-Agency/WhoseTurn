@@ -14,7 +14,6 @@
         {{-- Step 1: Roommates --}}
         <div x-show="step === 1">
             <div class="lg:grid lg:grid-cols-2 lg:gap-8">
-                {{-- Existing roommates --}}
                 <div>
                     @if($roommates->count() > 0)
                         <div class="space-y-2 mb-4">
@@ -34,7 +33,6 @@
                     @endif
                 </div>
 
-                {{-- Add form --}}
                 <div>
                     <form action="{{ route('coloc.setup.roommate.store', $coloc) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                         @csrf
@@ -67,23 +65,58 @@
 
         {{-- Step 2: Tasks --}}
         <div x-show="step === 2" x-cloak>
-            <form action="{{ route('coloc.setup.tasks.store', $coloc) }}" method="POST" class="space-y-4">
+            {{-- Select tasks --}}
+            <form action="{{ route('coloc.setup.tasks.store', $coloc) }}" method="POST" class="space-y-6">
                 @csrf
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                    @foreach($tasks as $task)
-                        <x-task-toggle :task="$task" :checked="$task->enabled" />
-                    @endforeach
+                <div>
+                    <p class="text-xs text-muted-foreground text-center mb-3">Sélectionne les tâches que tu veux activer</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                        @foreach($tasks as $task)
+                            <x-task-toggle :task="$task" :checked="$task->enabled" />
+                        @endforeach
+                    </div>
                 </div>
 
                 @error('tasks')
                     <p class="text-coral text-xs font-body text-center">{{ $message }}</p>
                 @enderror
 
-                <div class="flex gap-3 mt-6 max-w-sm mx-auto">
+                <div class="flex gap-3 max-w-sm mx-auto">
                     <x-button type="button" variant="secondary" @click="step = 1" class="flex-1">Retour</x-button>
                     <x-button class="flex-1">C'est parti !</x-button>
                 </div>
             </form>
+
+            {{-- Add custom task --}}
+            <div class="border-t border-border mt-6 pt-6">
+                <p class="text-sm font-title font-bold mb-3">Ajouter une tâche personnalisée</p>
+                <form action="{{ route('coloc.setup.task.create', $coloc) }}" method="POST" class="space-y-4">
+                    @csrf
+                    <x-input name="name" placeholder="ex: Sortir le chien, Arroser les plantes..." maxlength="40" value="{{ old('name') }}" required />
+                    @error('name')
+                        <p class="text-coral text-xs font-body">{{ $message }}</p>
+                    @enderror
+
+                    <div x-data="{ selectedIcon: '{{ old('icon_slug', 'courses') }}' }">
+                        <p class="text-xs text-muted-foreground mb-2">Choisis une icône :</p>
+                        <div class="grid grid-cols-5 sm:grid-cols-6 gap-2">
+                            @foreach(['vaisselle', 'poubelle', 'aspirateur', 'courses', 'cuisine', 'lessive', 'salle-de-bain', 'toilettes', 'salon', 'serpilliere'] as $icon)
+                                <button
+                                    type="button"
+                                    @click="selectedIcon = '{{ $icon }}'"
+                                    :class="selectedIcon === '{{ $icon }}' ? 'ring-2 ring-coral bg-coral/10 scale-105' : 'hover:ring-1 hover:ring-coral/50'"
+                                    class="flex items-center justify-center p-2 rounded-xl border border-border transition-all"
+                                >
+                                    <img src="{{ asset('images/tasks/' . $icon . '.svg') }}" alt="{{ $icon }}" class="w-6 h-6">
+                                </button>
+                            @endforeach
+                        </div>
+                        <input type="hidden" name="icon_slug" :value="selectedIcon">
+                    </div>
+
+                    <x-button variant="dashed">+ Ajouter cette tâche</x-button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

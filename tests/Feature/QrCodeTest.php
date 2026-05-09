@@ -9,6 +9,7 @@ beforeEach(function () {
     Roommate::factory()->create(['coloc_id' => $this->coloc->id, 'avatar_slug' => 'personnage-01', 'order' => 0]);
     Roommate::factory()->create(['coloc_id' => $this->coloc->id, 'avatar_slug' => 'personnage-02', 'order' => 1]);
     $this->coloc->createDefaultTasks();
+    $this->coloc->tasks()->update(['enabled' => true]);
 });
 
 it('loads the qr index page', function () {
