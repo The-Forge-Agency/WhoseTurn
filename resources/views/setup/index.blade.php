@@ -6,7 +6,7 @@
         <div class="text-center space-y-2">
             <h1 class="text-2xl lg:text-3xl font-bold font-title">{{ $coloc->name }}</h1>
             <p class="text-sm lg:text-base text-muted-foreground" x-show="step === 1">Qui habite ici ?</p>
-            <p class="text-sm lg:text-base text-muted-foreground" x-show="step === 2" x-cloak>Quelles taches pour la coloc ?</p>
+            <p class="text-sm lg:text-base text-muted-foreground" x-show="step === 2" x-cloak>Quelles tâches pour la coloc ?</p>
         </div>
 
         <x-step-indicator :currentStep="$currentStep" />
@@ -36,10 +36,10 @@
 
                 {{-- Add form --}}
                 <div>
-                    <form action="{{ route('coloc.setup.roommate.store', $coloc) }}" method="POST" class="space-y-4">
+                    <form action="{{ route('coloc.setup.roommate.store', $coloc) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                         @csrf
                         <div class="space-y-2">
-                            <x-input name="first_name" placeholder="Prenom" maxlength="30" value="{{ old('first_name') }}" required />
+                            <x-input name="first_name" placeholder="Prénom" maxlength="30" value="{{ old('first_name') }}" required />
                             @error('first_name')
                                 <p class="text-coral text-xs font-body">{{ $message }}</p>
                             @enderror

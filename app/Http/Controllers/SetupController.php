@@ -30,15 +30,24 @@ class SetupController extends Controller
 
     public function storeRoommate(StoreRoommateRequest $request, Coloc $coloc): RedirectResponse
     {
-        $takenAvatars = $coloc->roommates()->pluck('avatar_slug')->toArray();
+        $avatarSlug = $request->validated('avatar_slug');
+        $avatarUrl = null;
 
-        if (in_array($request->validated('avatar_slug'), $takenAvatars, true)) {
-            return back()->withErrors(['avatar_slug' => 'Cet avatar est deja pris !'])->withInput();
+        if ($request->hasFile('avatar_photo')) {
+            $request->validate(['avatar_photo' => 'image|max:2048']);
+            $avatarUrl = $request->file('avatar_photo')->store('avatars', 'public');
+            $avatarSlug = $avatarSlug ?: 'personnage-01';
+        } else {
+            $takenAvatars = $coloc->roommates()->pluck('avatar_slug')->toArray();
+            if (in_array($avatarSlug, $takenAvatars, true)) {
+                return back()->withErrors(['avatar_slug' => 'Cet avatar est déjà pris !'])->withInput();
+            }
         }
 
         $coloc->roommates()->create([
             'first_name' => $request->validated('first_name'),
-            'avatar_slug' => $request->validated('avatar_slug'),
+            'avatar_slug' => $avatarSlug,
+            'avatar_url' => $avatarUrl,
             'order' => $coloc->roommates()->count(),
         ]);
 

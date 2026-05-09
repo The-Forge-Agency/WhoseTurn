@@ -12,7 +12,7 @@ class Roommate extends Model
     /** @use HasFactory<RoommateFactory> */
     use HasFactory;
 
-    protected $fillable = ['coloc_id', 'first_name', 'avatar_slug', 'order'];
+    protected $fillable = ['coloc_id', 'first_name', 'avatar_slug', 'avatar_url', 'order'];
 
     public const AVATARS = [
         'personnage-01', 'personnage-02', 'personnage-03', 'personnage-04',

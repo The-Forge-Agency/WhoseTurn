@@ -22,7 +22,7 @@
         {{-- Task QRs --}}
         <section class="space-y-4">
             <h2 class="text-lg font-bold font-title text-center">QR par tache</h2>
-            <p class="text-xs text-muted-foreground text-center">Scanne un QR pour voir qui doit faire la tache cette semaine</p>
+            <p class="text-xs text-muted-foreground text-center">Scanne un QR pour voir qui doit faire la tâche cette semaine</p>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 lg:gap-4">
                 @foreach($tasks as $task)
                     <x-qr-card :coloc="$coloc" :task="$task" />

@@ -15,7 +15,7 @@
                         <div class="flex items-center gap-2 mt-1">
                             <span class="text-sm text-muted-foreground">C'est le tour de</span>
                             <span class="text-sm font-bold font-title" x-text="assignedRoommateName"></span>
-                            <img :src="'/images/avatars/' + assignedRoommateAvatar + '.png'" :alt="assignedRoommateName" class="w-8 h-8 rounded-full object-cover">
+                            <img :src="assignedRoommateAvatar" :alt="assignedRoommateName" class="w-8 h-8 rounded-full object-cover">
                         </div>
                     </div>
                 </div>
@@ -66,7 +66,7 @@
                             :disabled="loading"
                             class="w-full flex items-center gap-3 rounded-2xl border-2 border-border bg-card px-4 py-3 hover:border-coral transition-colors disabled:opacity-50"
                         >
-                            <img src="{{ asset('images/avatars/' . $roommate->avatar_slug . '.png') }}" alt="{{ $roommate->first_name }}" class="w-10 h-10 rounded-full object-cover">
+                            <img src="{{ $roommate->avatar_url ? asset('storage/' . $roommate->avatar_url) : asset('images/avatars/' . $roommate->avatar_slug . '.png') }}" alt="{{ $roommate->first_name }}" class="w-10 h-10 rounded-full object-cover">
                             <span class="text-sm text-ink">{{ $roommate->first_name }}</span>
                         </button>
                     @endforeach

@@ -6,11 +6,11 @@
 
     <div class="space-y-2">
         <h1 class="text-2xl font-bold font-title">Coloc introuvable</h1>
-        <p class="text-sm text-muted-foreground">Cette coloc n'existe pas... ou alors elle a demenage sans prevenir.</p>
+        <p class="text-sm text-muted-foreground">Cette coloc n'existe pas... ou alors elle a déménagé sans prévenir.</p>
     </div>
 
     <a href="{{ route('landing') }}" class="bg-coral hover:bg-coral-dark text-cream font-title font-bold rounded-2xl py-3 px-8 transition-colors">
-        Creer une coloc
+        Créer une coloc
     </a>
 </div>
 @endsection

@@ -1,58 +1,150 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# WhoseTurn
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> App #01/52 — [The Forge Agency](https://the-forge.agency) sprint challenge
 
-## About Laravel
+**WhoseTurn** est une web app de rotation automatique des tâches ménagères en colocation. Zéro inscription, accès uniquement par lien partagé.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Le concept
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+En coloc, il y a toujours quelqu'un qui fait tout... et quelqu'un qui ne voit rien. WhoseTurn résout ça avec une rotation automatique, équitable et sans prise de tête.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Crée ta coloc en 30 secondes
+- Ajoute tes colocs avec avatar ou photo
+- Choisis les tâches (ou crée les tiennes)
+- Chaque semaine, la rotation change automatiquement
+- Scanne un QR code sur le frigo pour voir qui fait quoi
 
-## Learning Laravel
+## Stack technique
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Backend** : Laravel 13 (PHP 8.5)
+- **Frontend** : Blade + Tailwind CSS 4 + Alpine.js
+- **Base de données** : SQLite
+- **QR Codes** : simplesoftwareio/simple-qrcode
+- **Tests** : Pest v4 (34 tests)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Build in public — Comment ce projet a été créé
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+Ce projet a été entièrement construit avec **Claude Code** (Claude Opus 4) en une seule session de pair programming IA. Voici le process :
 
-## Agentic Development
+### Prompt initial
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+> "À l'aide du readme, analyse le brief, toutes les assets (les rename, mapper leurs noms et l'usage qu'on va en faire), fais-moi un plan ultra détaillé avec des tickets sous forme de .md [...] tu dois faire une application 100% fonctionnelle en Laravel, aucune feature n'est complexe, tout doit rester simple et efficace."
 
-```bash
-composer require laravel/boost --dev
+### Les étapes
 
-php artisan boost:install
+1. **Analyse du brief** — Lecture du README + clone de la maquette React/Next.js pour extraire la direction artistique exacte (couleurs, fonts, composants)
+
+2. **Mapping des assets** — 51 fichiers bruts (SVG, PNG) analysés, renommés et mappés :
+   - 16 avatars PNG (`8.png`→`23.png` → `personnage-01.png`→`personnage-16.png`)
+   - 10 icônes tâches SVG
+   - 3 logos SVG
+
+3. **Plan en 9 tickets** — Découpés dans `tickets/01-fondation.md` → `tickets/09-qr-codes.md`, chacun avec objectif, fichiers, tâches et critères d'acceptation
+
+4. **Implémentation séquentielle** — Ticket par ticket, dans l'ordre chronologique logique :
+   - 01: Fondation & Design System (Tailwind tokens, Alpine.js, layout Blade)
+   - 02: Base de données & Modèles (4 migrations, 4 modèles, factories, seeder)
+   - 03: Landing page + Routes (12 routes, formulaire création coloc)
+   - 04: Onboarding en 2 étapes (wizard colocs + tâches)
+   - 05: Dashboard + Rotation (algo round-robin + scoring)
+   - 06: Completion dialog (bottom-sheet Alpine.js, 3 statuts)
+   - 07: Page réglages (CRUD colocs/tâches)
+   - 08: 404, polish & tests Pest (29 puis 34 tests)
+   - 09: QR Codes (par coloc + par tâche, page imprimable)
+
+5. **Itérations UX** — Ajustements post-feedback :
+   - Bug toggle tâches (double-toggle `<label>` → `<div>`)
+   - Locale FR complète (dates Carbon + messages validation)
+   - Layout desktop responsive (grilles multi-colonnes)
+   - Ajout tâches custom + suppression
+   - Upload photo avatar (camera/galerie)
+   - Accents français partout
+
+### Allers-retours IA notables
+
+| Problème | Prompt | Solution |
+|---|---|---|
+| `share_code` pas généré en seed | Constaté en tinker | Suppression du trait `WithoutModelEvents` dans le seeder |
+| Migration `task_completions` échoue | FK vers `tasks` qui n'existe pas encore | Timestamp de migration décalé de 1 seconde |
+| Tests unitaires sans DB | Tests dans `tests/Unit/` | Déplacés dans `tests/Feature/` (RefreshDatabase global) |
+| Toggle ne toggle pas | Retour utilisateur "les activités sont pas décochables" | `<label>` + `@click` + `x-model` = double toggle → `<div>` avec `@click` seul |
+| Dates en anglais | "il faut que l'app soit en français à 100%" | `APP_LOCALE=fr` + fichier `lang/fr/validation.php` complet |
+
+### Prompts clés utilisés
+
+```
+"l'objectif est d'avoir un QR code de la coloc et un QR code par tâche 
+pour vérifier qui doit faire quoi, exportable facilement"
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+```
+"On doit aussi pouvoir mettre une photo de sa pellicule ou importer 
+ou prendre une photo, il faut pouvoir rajouter des tâches custom 
+également, comme 'sortir le chien'"
+```
 
-## Contributing
+```
+"fais attention, tu n'as pas mis un seul accent dans toute l'app"
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Installation
 
-## Code of Conduct
+```bash
+git clone git@github.com:The-Forge-Agency/WhoseTurn.git
+cd WhoseTurn
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+php artisan storage:link
+npm run build
+composer dev
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+L'app tourne sur `http://localhost:8000`.
 
-## Security Vulnerabilities
+## Architecture
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```
+app/
+├── Http/Controllers/
+│   ├── ColocController.php      # Landing, dashboard, completion
+│   ├── QrCodeController.php     # QR codes SVG + pages
+│   ├── SettingsController.php   # CRUD colocs/tâches
+│   └── SetupController.php      # Wizard onboarding
+├── Models/
+│   ├── Coloc.php                # share_code auto-généré
+│   ├── Roommate.php             # avatar preset ou photo custom
+│   ├── Task.php                 # défaut + custom, toggleable
+│   └── TaskCompletion.php       # done / not_done / done_by_other
+└── Services/
+    └── RotationService.php      # Algo rotation + scoring
+```
 
-## License
+### Algorithme de rotation
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Semaine active** : lun-ven = cette semaine, sam-dim = semaine prochaine (ISO week)
+- **Rotation simple** : `(taskIndex + weekNumber) % roommateCount`
+- **Avec scoring** : pondération basée sur les completions de la semaine précédente
+  - `not_done` → -1 pour l'assigné (plus de tâches la semaine suivante)
+  - `done_by_other` → -1 pour l'assigné, +1 pour l'aidant
+
+## Tests
+
+```bash
+php artisan test --compact
+# 34 tests, 34 passed, 79 assertions
+```
+
+## Design System
+
+- **Fond** : `#FFF8F0` (cream)
+- **Texte** : `#2D2D2D` (ink)
+- **Accent** : `#FF6B6B` (coral)
+- **Fonts** : Nunito (titres) + Space Mono (body)
+- **Radius** : `rounded-2xl` partout
+
+## Licence
+
+MIT

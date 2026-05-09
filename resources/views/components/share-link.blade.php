@@ -1,7 +1,7 @@
 @props(['coloc'])
 
 <div class="space-y-2">
-    <p class="text-xs text-muted-foreground text-center">Partage ce lien a tes colocs :</p>
+    <p class="text-xs text-muted-foreground text-center">Partage ce lien à tes colocs :</p>
     <div
         x-data="{ copied: false }"
         class="flex items-center rounded-2xl bg-card p-3 border border-border gap-3"

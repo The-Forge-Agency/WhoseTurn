@@ -15,7 +15,7 @@ beforeEach(function () {
 test('settings page loads', function () {
     $this->get(route('coloc.settings', $this->coloc))
         ->assertOk()
-        ->assertSee('Reglages');
+        ->assertSee('Réglages');
 });
 
 test('can add roommate from settings', function () {

@@ -21,10 +21,10 @@
                 @enderror
             </div>
 
-            <x-button>Creer ma coloc</x-button>
+            <x-button>Créer ma coloc</x-button>
         </form>
 
-        <p class="text-xs text-muted-foreground">Zero inscription. Juste un lien a partager.</p>
+        <p class="text-xs text-muted-foreground">Zéro inscription. Juste un lien à partager.</p>
     </div>
 </div>
 @endsection

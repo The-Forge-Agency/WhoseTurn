@@ -2,7 +2,7 @@
 
 <div class="flex items-center gap-3 bg-card border border-border rounded-2xl px-3 py-2">
     <img
-        src="{{ asset('images/avatars/' . $roommate->avatar_slug . '.png') }}"
+        src="{{ $roommate->avatar_url ? asset('storage/' . $roommate->avatar_url) : asset('images/avatars/' . $roommate->avatar_slug . '.png') }}"
         alt="{{ $roommate->first_name }}"
         class="w-10 h-10 rounded-full object-cover"
     >

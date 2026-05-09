@@ -12,7 +12,7 @@
             @if($roommate)
                 <p class="text-sm text-muted-foreground text-center">{{ $weekRange }}</p>
                 <div class="flex flex-col items-center gap-3">
-                    <img src="{{ asset('images/avatars/' . $roommate->avatar_slug . '.png') }}" alt="{{ $roommate->first_name }}" class="w-20 h-20 lg:w-24 lg:h-24 rounded-full object-cover">
+                    <img src="{{ $roommate->avatar_url ? asset('storage/' . $roommate->avatar_url) : asset('images/avatars/' . $roommate->avatar_slug . '.png') }}" alt="{{ $roommate->first_name }}" class="w-20 h-20 lg:w-24 lg:h-24 rounded-full object-cover">
                     <p class="text-lg lg:text-xl font-title font-bold text-center">C'est le tour de {{ $roommate->first_name }}</p>
                 </div>
             @else
