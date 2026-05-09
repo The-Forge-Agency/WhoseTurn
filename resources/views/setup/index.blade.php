@@ -90,16 +90,22 @@
             {{-- Add custom task --}}
             <div class="border-t border-border mt-6 pt-6">
                 <p class="text-sm font-title font-bold mb-3">Ajouter une tâche personnalisée</p>
-                <form action="{{ route('coloc.setup.task.create', $coloc) }}" method="POST" class="space-y-4">
+                <form action="{{ route('coloc.setup.task.create', $coloc) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                     @csrf
                     <x-input name="name" placeholder="ex: Sortir le chien, Arroser les plantes..." maxlength="40" value="{{ old('name') }}" required />
                     @error('name')
                         <p class="text-coral text-xs font-body">{{ $message }}</p>
                     @enderror
 
-                    <div x-data="{ selectedIcon: '{{ old('icon_slug', 'courses') }}' }">
-                        <p class="text-xs text-muted-foreground mb-2">Choisis une icône :</p>
-                        <div class="grid grid-cols-5 sm:grid-cols-6 gap-2">
+                    <div x-data="{ selectedIcon: '{{ old('icon_slug', '') }}', usePhoto: false, photoPreview: null }">
+                        <p class="text-xs text-muted-foreground mb-2">Icône (optionnel) :</p>
+
+                        <div class="flex gap-2 mb-2">
+                            <button type="button" @click="usePhoto = false" :class="!usePhoto ? 'bg-coral/10 border-coral' : 'border-border'" class="text-xs px-3 py-1 rounded-xl border font-title font-bold transition-all">Icône</button>
+                            <button type="button" @click="usePhoto = true; selectedIcon = ''" :class="usePhoto ? 'bg-coral/10 border-coral' : 'border-border'" class="text-xs px-3 py-1 rounded-xl border font-title font-bold transition-all">Photo</button>
+                        </div>
+
+                        <div x-show="!usePhoto" class="grid grid-cols-5 sm:grid-cols-6 gap-2">
                             @foreach(['vaisselle', 'poubelle', 'aspirateur', 'courses', 'cuisine', 'lessive', 'salle-de-bain', 'toilettes', 'salon', 'serpilliere'] as $icon)
                                 <button
                                     type="button"
@@ -111,6 +117,20 @@
                                 </button>
                             @endforeach
                         </div>
+
+                        <div x-show="usePhoto" x-cloak class="space-y-2">
+                            <label class="flex items-center gap-3 border border-border rounded-2xl px-4 py-3 cursor-pointer hover:border-coral/50 transition-colors">
+                                <template x-if="photoPreview">
+                                    <img :src="photoPreview" class="w-10 h-10 rounded-xl object-cover">
+                                </template>
+                                <template x-if="!photoPreview">
+                                    <div class="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground text-lg">+</div>
+                                </template>
+                                <span class="text-sm text-muted-foreground font-body" x-text="photoPreview ? 'Changer la photo' : 'Choisir une photo'"></span>
+                                <input type="file" name="icon_photo" accept="image/*" class="hidden" @change="const f = $event.target.files[0]; if(f) { const r = new FileReader(); r.onload = e => photoPreview = e.target.result; r.readAsDataURL(f); }">
+                            </label>
+                        </div>
+
                         <input type="hidden" name="icon_slug" :value="selectedIcon">
                     </div>
 

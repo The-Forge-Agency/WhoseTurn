@@ -9,7 +9,7 @@
             <div class="bg-cream rounded-t-3xl sm:rounded-3xl p-6 space-y-5 w-full sm:max-w-md" @click.stop>
                 {{-- Header --}}
                 <div class="flex items-center gap-4">
-                    <img :src="'/images/tasks/' + taskIcon + '.svg'" :alt="taskName" class="w-12 h-12">
+                    <img :src="taskIcon" :alt="taskName" class="w-12 h-12 rounded-xl object-cover">
                     <div class="flex-1">
                         <p class="text-lg font-bold font-title" x-text="taskName"></p>
                         <div class="flex items-center gap-2 mt-1">

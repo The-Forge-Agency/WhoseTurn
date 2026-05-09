@@ -79,6 +79,29 @@
                     <x-button>Sauvegarder</x-button>
                 </form>
 
+                {{-- Frequency settings --}}
+                @if($tasks->where('enabled', true)->count() > 0)
+                    <div class="border-t border-border pt-4">
+                        <p class="text-sm font-title font-bold mb-1">Fréquence</p>
+                        <p class="text-xs text-muted-foreground mb-3">Tous les combien chaque tâche doit être faite ?</p>
+                        <form action="{{ route('coloc.settings.task.frequencies', $coloc) }}" method="POST" class="space-y-2">
+                            @csrf
+                            @foreach($tasks->where('enabled', true) as $task)
+                                <div class="flex items-center gap-3 bg-card border border-border rounded-2xl px-4 py-2">
+                                    <img src="{{ $task->icon_src }}" alt="{{ $task->name }}" class="w-6 h-6 rounded-lg object-cover">
+                                    <span class="text-xs text-ink flex-1 font-title font-bold">{{ $task->name }}</span>
+                                    <select name="frequencies[{{ $task->id }}]" class="text-xs bg-cream border border-border rounded-xl px-2 py-1 font-body text-ink">
+                                        <option value="weekly" @selected($task->frequency === 'weekly')>Chaque semaine</option>
+                                        <option value="biweekly" @selected($task->frequency === 'biweekly')>Toutes les 2 semaines</option>
+                                        <option value="monthly" @selected($task->frequency === 'monthly')>1 fois par mois</option>
+                                    </select>
+                                </div>
+                            @endforeach
+                            <x-button>Sauvegarder les fréquences</x-button>
+                        </form>
+                    </div>
+                @endif
+
                 {{-- Delete tasks list --}}
                 @if($tasks->count() > 0)
                     <div class="border-t border-border pt-4">
@@ -86,7 +109,7 @@
                         <div class="space-y-1">
                             @foreach($tasks as $task)
                                 <div class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-muted transition-colors">
-                                    <img src="{{ asset('images/tasks/' . $task->icon_slug . '.svg') }}" alt="{{ $task->name }}" class="w-5 h-5">
+                                    <img src="{{ $task->icon_src }}" alt="{{ $task->name }}" class="w-5 h-5 rounded-lg object-cover">
                                     <span class="text-xs text-ink flex-1">{{ $task->name }}</span>
                                     <form action="{{ route('coloc.settings.task.destroy', [$coloc, $task]) }}" method="POST">
                                         @csrf
@@ -102,16 +125,22 @@
                 {{-- Add custom task --}}
                 <div class="border-t border-border pt-4">
                     <p class="text-sm font-title font-bold mb-3">Ajouter une tâche</p>
-                    <form action="{{ route('coloc.settings.task.create', $coloc) }}" method="POST" class="space-y-4">
+                    <form action="{{ route('coloc.settings.task.create', $coloc) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                         @csrf
                         <x-input name="name" placeholder="ex: Sortir le chien" maxlength="40" value="{{ old('name') }}" required />
                         @error('name')
                             <p class="text-coral text-xs font-body">{{ $message }}</p>
                         @enderror
 
-                        <div x-data="{ selectedIcon: '{{ old('icon_slug', 'custom') }}' }">
-                            <p class="text-xs text-muted-foreground mb-2">Choisis une icône :</p>
-                            <div class="grid grid-cols-5 sm:grid-cols-6 gap-2">
+                        <div x-data="{ selectedIcon: '{{ old('icon_slug', '') }}', usePhoto: false, photoPreview: null }">
+                            <p class="text-xs text-muted-foreground mb-2">Icône (optionnel) :</p>
+
+                            <div class="flex gap-2 mb-2">
+                                <button type="button" @click="usePhoto = false" :class="!usePhoto ? 'bg-coral/10 border-coral' : 'border-border'" class="text-xs px-3 py-1 rounded-xl border font-title font-bold transition-all">Icône</button>
+                                <button type="button" @click="usePhoto = true; selectedIcon = ''" :class="usePhoto ? 'bg-coral/10 border-coral' : 'border-border'" class="text-xs px-3 py-1 rounded-xl border font-title font-bold transition-all">Photo</button>
+                            </div>
+
+                            <div x-show="!usePhoto" class="grid grid-cols-5 sm:grid-cols-6 gap-2">
                                 @foreach(['vaisselle', 'poubelle', 'aspirateur', 'courses', 'cuisine', 'lessive', 'salle-de-bain', 'toilettes', 'salon', 'serpilliere'] as $icon)
                                     <button
                                         type="button"
@@ -123,11 +152,22 @@
                                     </button>
                                 @endforeach
                             </div>
+
+                            <div x-show="usePhoto" x-cloak class="space-y-2">
+                                <label class="flex items-center gap-3 border border-border rounded-2xl px-4 py-3 cursor-pointer hover:border-coral/50 transition-colors">
+                                    <template x-if="photoPreview">
+                                        <img :src="photoPreview" class="w-10 h-10 rounded-xl object-cover">
+                                    </template>
+                                    <template x-if="!photoPreview">
+                                        <div class="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground text-lg">+</div>
+                                    </template>
+                                    <span class="text-sm text-muted-foreground font-body" x-text="photoPreview ? 'Changer la photo' : 'Choisir une photo'"></span>
+                                    <input type="file" name="icon_photo" accept="image/*" class="hidden" @change="const f = $event.target.files[0]; if(f) { const r = new FileReader(); r.onload = e => photoPreview = e.target.result; r.readAsDataURL(f); }">
+                                </label>
+                            </div>
+
                             <input type="hidden" name="icon_slug" :value="selectedIcon">
                         </div>
-                        @error('icon_slug')
-                            <p class="text-coral text-xs font-body">{{ $message }}</p>
-                        @enderror
 
                         <x-button variant="dashed">+ Ajouter cette tâche</x-button>
                     </form>

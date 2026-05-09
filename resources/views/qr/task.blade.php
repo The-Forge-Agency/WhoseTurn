@@ -6,7 +6,7 @@
 
     <main class="flex-1 px-4 py-6 lg:py-10 max-w-sm lg:max-w-lg mx-auto w-full flex flex-col items-center justify-center gap-6">
         <div class="bg-card border border-border rounded-2xl p-8 lg:p-10 w-full flex flex-col items-center gap-6">
-            <img src="{{ asset('images/tasks/' . $task->icon_slug . '.svg') }}" alt="{{ $task->name }}" class="w-16 h-16 lg:w-20 lg:h-20">
+            <img src="{{ $task->icon_src }}" alt="{{ $task->name }}" class="w-16 h-16 lg:w-20 lg:h-20 rounded-xl object-cover">
             <h1 class="text-2xl lg:text-3xl font-bold font-title">{{ $task->name }}</h1>
 
             @if($roommate)

@@ -21,13 +21,13 @@ $statusIcon = match($status) {
     class="w-full flex items-center gap-4 rounded-2xl border-2 p-4 transition-all {{ $borderClass }}"
     data-task-id="{{ $task->id }}"
     data-task-name="{{ $task->name }}"
-    data-task-icon="{{ $task->icon_slug }}"
+    data-task-icon="{{ $task->icon_src }}"
     data-roommate-id="{{ $roommate->id }}"
     data-roommate-name="{{ $roommate->first_name }}"
     data-roommate-avatar="{{ $roommate->avatar_url ? asset('storage/' . $roommate->avatar_url) : asset('images/avatars/' . $roommate->avatar_slug . '.png') }}"
     @click="openCompletion($event.currentTarget.dataset)"
 >
-    <img src="{{ asset('images/tasks/' . $task->icon_slug . '.svg') }}" alt="{{ $task->name }}" class="w-10 h-10 lg:w-12 lg:h-12 shrink-0">
+    <img src="{{ $task->icon_src }}" alt="{{ $task->name }}" class="w-10 h-10 lg:w-12 lg:h-12 shrink-0 rounded-lg object-cover">
 
     <div class="flex-1 text-left min-w-0">
         <p class="font-title font-bold text-ink text-sm lg:text-base truncate">{{ $task->name }}</p>

@@ -85,12 +85,19 @@ class SetupController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:40',
-            'icon_slug' => 'required|string|max:30',
+            'icon_slug' => 'nullable|string|max:30',
+            'icon_photo' => 'nullable|image|max:2048',
         ]);
+
+        $iconUrl = null;
+        if ($request->hasFile('icon_photo')) {
+            $iconUrl = $request->file('icon_photo')->store('task-icons', 'public');
+        }
 
         $coloc->tasks()->create([
             'name' => $validated['name'],
-            'icon_slug' => $validated['icon_slug'],
+            'icon_slug' => $validated['icon_slug'] ?? null,
+            'icon_url' => $iconUrl,
             'enabled' => true,
             'order' => $coloc->tasks()->count(),
         ]);

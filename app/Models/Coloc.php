@@ -70,6 +70,12 @@ class Coloc extends Model
         return $this->hasMany(TaskCompletion::class);
     }
 
+    /** @return HasMany<UrgentTodo, $this> */
+    public function urgentTodos(): HasMany
+    {
+        return $this->hasMany(UrgentTodo::class);
+    }
+
     public function createDefaultTasks(): void
     {
         foreach (self::DEFAULT_TASKS as $index => $task) {

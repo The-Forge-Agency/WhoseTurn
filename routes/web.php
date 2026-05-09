@@ -12,6 +12,11 @@ Route::post('/', [ColocController::class, 'store'])->name('coloc.store');
 Route::prefix('{coloc:share_code}')->group(function () {
     Route::get('/', [ColocController::class, 'show'])->name('coloc.dashboard');
     Route::post('/complete', [ColocController::class, 'complete'])->name('coloc.complete');
+    Route::get('/history', [ColocController::class, 'history'])->name('coloc.history');
+    Route::get('/stats', [ColocController::class, 'stats'])->name('coloc.stats');
+    Route::post('/todo', [ColocController::class, 'storeTodo'])->name('coloc.todo.store');
+    Route::post('/todo/{todo}/complete', [ColocController::class, 'completeTodo'])->name('coloc.todo.complete');
+    Route::delete('/todo/{todo}', [ColocController::class, 'deleteTodo'])->name('coloc.todo.destroy');
 
     Route::get('/setup', [SetupController::class, 'index'])->name('coloc.setup');
     Route::post('/setup/roommate', [SetupController::class, 'storeRoommate'])->name('coloc.setup.roommate.store');
@@ -24,6 +29,7 @@ Route::prefix('{coloc:share_code}')->group(function () {
     Route::delete('/settings/roommate/{roommate}', [SettingsController::class, 'destroyRoommate'])->name('coloc.settings.roommate.destroy')->scopeBindings();
     Route::post('/settings/tasks', [SettingsController::class, 'storeTasks'])->name('coloc.settings.tasks.store');
     Route::post('/settings/task/create', [SettingsController::class, 'storeCustomTask'])->name('coloc.settings.task.create');
+    Route::post('/settings/task/frequencies', [SettingsController::class, 'updateFrequencies'])->name('coloc.settings.task.frequencies');
     Route::delete('/settings/task/{task}', [SettingsController::class, 'destroyTask'])->name('coloc.settings.task.destroy')->scopeBindings();
 
     Route::get('/qr', [QrCodeController::class, 'index'])->name('coloc.qr');

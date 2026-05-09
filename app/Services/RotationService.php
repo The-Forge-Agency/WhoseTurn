@@ -49,13 +49,23 @@ class RotationService
         return "{$prefix} : du {$fmt($range['start'])} au {$fmt($range['end'])}";
     }
 
+    public function formatWeekRangeFor(int $week, int $year): string
+    {
+        $start = Carbon::now()->setISODate($year, $week, 1)->startOfDay();
+        $end = $start->copy()->addDays(6);
+        $fmt = fn (Carbon $date): string => $date->translatedFormat('j F');
+
+        return "Semaine {$week} : du {$fmt($start)} au {$fmt($end)}";
+    }
+
     /**
      * @return Collection<int, array{task: Task, roommate: Roommate}>
      */
     public function getAssignments(Coloc $coloc, int $week, int $year): Collection
     {
         $roommates = $coloc->roommates()->orderBy('order')->get();
-        $tasks = $coloc->tasks()->enabled()->orderBy('order')->get();
+        $tasks = $coloc->tasks()->enabled()->orderBy('order')->get()
+            ->filter(fn (Task $task): bool => $task->isDueOnWeek($week));
 
         if ($roommates->isEmpty() || $tasks->isEmpty()) {
             return collect();
